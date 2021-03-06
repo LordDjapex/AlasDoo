@@ -1,9 +1,11 @@
 package com.alasdoo.developercourseassignment.controller;
 
 import com.alasdoo.developercourseassignment.dto.TeacherDeveloperCourseDTO;
-import com.alasdoo.developercourseassignment.service.impl.TeacherDeveloperCourseServiceImpl;
+import com.alasdoo.developercourseassignment.service.TeacherDeveloperCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,36 +24,38 @@ import java.util.List;
 public class TeacherDeveloperCourseController {
 
     @Autowired
-    private TeacherDeveloperCourseServiceImpl teacherDeveloperCourseServiceImpl;
+    private TeacherDeveloperCourseService teacherDeveloperCourseService;
 
     @GetMapping(value = "/getTeacherCourse/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TeacherDeveloperCourseDTO selectTeacherDeveloperCourse(@PathVariable("id") Integer id) {
-        return teacherDeveloperCourseServiceImpl.findOne(id);
+    public ResponseEntity<TeacherDeveloperCourseDTO> selectTeacherDeveloperCourse(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(teacherDeveloperCourseService.findOne(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TeacherDeveloperCourseDTO> getAllTeacherDeveloperCourses() {
-        return teacherDeveloperCourseServiceImpl.findAll();
+    public ResponseEntity<List<TeacherDeveloperCourseDTO>> getAllTeacherDeveloperCourses() {
+        return new ResponseEntity<>(teacherDeveloperCourseService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/addTeacherCourse", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TeacherDeveloperCourseDTO saveTeacherDeveloperCourse(@RequestBody TeacherDeveloperCourseDTO teacherDeveloperCourseDTO) {
-        return teacherDeveloperCourseServiceImpl.save(teacherDeveloperCourseDTO);
+    public ResponseEntity<TeacherDeveloperCourseDTO> saveTeacherDeveloperCourse(@RequestBody TeacherDeveloperCourseDTO teacherDeveloperCourseDTO) {
+        return new ResponseEntity<>(teacherDeveloperCourseService.save(teacherDeveloperCourseDTO), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TeacherDeveloperCourseDTO updateTeacherDeveloperCourse(@PathVariable("id") Integer id, @RequestBody TeacherDeveloperCourseDTO teacherDeveloperCourseDTO) {
-        return teacherDeveloperCourseServiceImpl.update(id, teacherDeveloperCourseDTO);
+    public ResponseEntity<TeacherDeveloperCourseDTO> updateTeacherDeveloperCourse(@PathVariable("id") Integer id,
+                                                                  @RequestBody TeacherDeveloperCourseDTO teacherDeveloperCourseDTO) {
+        return new ResponseEntity<>(teacherDeveloperCourseService.update(id, teacherDeveloperCourseDTO), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteTeacherDeveloperCourse(@PathVariable("id") Integer id) {
-        teacherDeveloperCourseServiceImpl.remove(id);
+    public ResponseEntity<Void> deleteTeacherDeveloperCourse(@PathVariable("id") Integer id) {
+        teacherDeveloperCourseService.remove(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/get/teacher/{teacherId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TeacherDeveloperCourseDTO findByTeacherId(@PathVariable("teacherId") Integer teacherId) {
-        return teacherDeveloperCourseServiceImpl.findByTeacherId(teacherId);
+    public ResponseEntity<TeacherDeveloperCourseDTO> findByTeacherId(@PathVariable("teacherId") Integer teacherId) {
+        return new ResponseEntity<>(teacherDeveloperCourseService.findByTeacherId(teacherId), HttpStatus.OK);
     }
 
 }

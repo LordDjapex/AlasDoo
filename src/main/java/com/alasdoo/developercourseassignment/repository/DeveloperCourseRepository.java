@@ -14,16 +14,18 @@ public interface DeveloperCourseRepository extends JpaRepository<DeveloperCourse
 
     Optional<List<DeveloperCourse>> findByDeveloperCourseName(String developerCourseName);
 
-    @Query(value = "SELECT dc.id, dc.classes_per_week, dc.cost_per_class, dc.developer_course_name " +
-        "FROM developer_course dc " +
-        "JOIN student s " +
-        "WHERE s.id = :id", nativeQuery = true)
+    //changed  from native to jqpl
+    @Query(value = "SELECT dc " +
+        "FROM DeveloperCourse dc " +
+        "JOIN Student s " +
+        "WHERE s.id = :id")
     Optional<List<DeveloperCourse>> findDevCourseByStudentId(@Param("id") Integer id);
 
-    @Query(value = "SELECT dc.id, dc.classes_per_week, dc.cost_per_class, dc.developer_course_name " +
-        "FROM developer_course dc " +
-        "JOIN teacher t " +
-        "WHERE t.id = :id", nativeQuery = true)
+    //changed  from native to jqpl
+    @Query(value = "SELECT dc " +
+        "FROM DeveloperCourse dc " +
+        "JOIN Teacher t " +
+        "WHERE t.id = :id")
     Optional<List<DeveloperCourse>> findDevCourseByTeacherId(@Param("id") Integer id);
 
 }

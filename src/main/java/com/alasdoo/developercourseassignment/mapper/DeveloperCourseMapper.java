@@ -23,12 +23,4 @@ public class DeveloperCourseMapper {
         return developerCourse;
     }
 
-    public List<DeveloperCourseDTO> transformToListOfDTO(List<DeveloperCourse> developerCourseSrc) {
-        List<DeveloperCourseDTO> developerCourseDTO = new ArrayList<>(developerCourseSrc.size());
-        for (DeveloperCourse developerCourse : developerCourseSrc) {
-            developerCourseDTO.add(transformToDTO(developerCourse));
-        }
-        return developerCourseDTO;
-    }
-
 }

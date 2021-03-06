@@ -12,6 +12,7 @@ import com.alasdoo.developercourseassignment.service.TeacherDeveloperCourseServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +48,7 @@ public class TeacherDeveloperCourseServiceImpl implements TeacherDeveloperCourse
     }
 
     @Override
+    @Transactional
     public TeacherDeveloperCourseDTO save(TeacherDeveloperCourseDTO teacherDeveloperCourseDTO) {
         TeacherDeveloperCourse teacherDeveloperCourse = teacherDeveloperCourseMapper.transformToEntity(teacherDeveloperCourseDTO);
         Integer teacherId = teacherDeveloperCourseDTO.getTeacherId();
@@ -69,6 +71,7 @@ public class TeacherDeveloperCourseServiceImpl implements TeacherDeveloperCourse
     }
 
     @Override
+    @Transactional
     public void remove(Integer id) throws IllegalArgumentException {
         Optional<TeacherDeveloperCourse> teacherDeveloperCourse = teacherDeveloperCourseRepository.findById(id);
         if (!teacherDeveloperCourse.isPresent()) {
@@ -79,6 +82,7 @@ public class TeacherDeveloperCourseServiceImpl implements TeacherDeveloperCourse
     }
 
     @Override
+    @Transactional
     public TeacherDeveloperCourseDTO update(Integer id, TeacherDeveloperCourseDTO teacherDeveloperCourseDTO) {
         Optional<TeacherDeveloperCourse> oldTeacherDeveloperCourse = teacherDeveloperCourseRepository.findById(id);
         if (!oldTeacherDeveloperCourse.isPresent()) {
@@ -87,8 +91,7 @@ public class TeacherDeveloperCourseServiceImpl implements TeacherDeveloperCourse
         }
         oldTeacherDeveloperCourse.get().setDeveloperCourseId(teacherDeveloperCourseDTO.getDeveloperCourseId());
         oldTeacherDeveloperCourse.get().setTeacherId(teacherDeveloperCourseDTO.getTeacherId());
-        teacherDeveloperCourseRepository.save(oldTeacherDeveloperCourse.get());
-        return teacherDeveloperCourseMapper.transformToDTO(oldTeacherDeveloperCourse.get());
+        return teacherDeveloperCourseMapper.transformToDTO(teacherDeveloperCourseRepository.save(oldTeacherDeveloperCourse.get()));
     }
 
     @Override

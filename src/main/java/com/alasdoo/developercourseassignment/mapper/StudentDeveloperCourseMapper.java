@@ -22,12 +22,4 @@ public class StudentDeveloperCourseMapper {
         BeanUtils.copyProperties(studentDeveloperCourseDTOSrc, studentDeveloperCourse);
         return studentDeveloperCourse;
     }
-
-    public List<StudentDeveloperCourseDTO> transformToListOfDTO(List<StudentDeveloperCourse> studentDeveloperCourseDTOSrc) {
-        List<StudentDeveloperCourseDTO> studentDeveloperCourseDTO = new ArrayList<>(studentDeveloperCourseDTOSrc.size());
-        for (StudentDeveloperCourse studentDeveloperCourse : studentDeveloperCourseDTOSrc) {
-            studentDeveloperCourseDTO.add(transformToDTO(studentDeveloperCourse));
-        }
-        return studentDeveloperCourseDTO;
-    }
 }

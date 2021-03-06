@@ -10,6 +10,7 @@ import com.alasdoo.developercourseassignment.service.DeveloperCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,12 +46,14 @@ public class DeveloperCourseServiceImpl implements DeveloperCourseService {
     }
 
     @Override
+    @Transactional
     public DeveloperCourseDTO save(DeveloperCourseDTO developerCourseDTO) {
         DeveloperCourse developerCourse = developerCourseMapper.transformToEntity(developerCourseDTO);
         return developerCourseMapper.transformToDTO(developerCourseRepository.save(developerCourse));
     }
 
     @Override
+    @Transactional
     public void remove(Integer id) throws IllegalArgumentException {
         Optional<DeveloperCourse> developerCourse = developerCourseRepository.findById(id);
         if (!developerCourse.isPresent()) {
@@ -61,6 +64,7 @@ public class DeveloperCourseServiceImpl implements DeveloperCourseService {
     }
 
     @Override
+    @Transactional
     public DeveloperCourseDTO update(Integer id, DeveloperCourseDTO developerCourseDTO) {
         Optional<DeveloperCourse> oldDeveloperCourse = developerCourseRepository.findById(id);
         if (!oldDeveloperCourse.isPresent()) {
@@ -81,7 +85,8 @@ public class DeveloperCourseServiceImpl implements DeveloperCourseService {
             throw new IllegalArgumentException
                 ("Course with the following name = " + developerCourseName + " is not found.");
         }
-        return developerCourseMapper.transformToListOfDTO(developerCourses.get());
+        //I felt as if convert to list of dto was unecessary because the same thing could be done using stream.
+        return developerCourses.get().stream().map(dc -> developerCourseMapper.transformToDTO(dc)).collect(Collectors.toList());
     }
 
     @Override
@@ -95,7 +100,7 @@ public class DeveloperCourseServiceImpl implements DeveloperCourseService {
             throw new IllegalArgumentException
                 ("Courses are not present for student with the following id = " + studentId + " is not found.");
         }
-        return developerCourseMapper.transformToListOfDTO(developerCourses.get());
+        return developerCourses.get().stream().map(dc -> developerCourseMapper.transformToDTO(dc)).collect(Collectors.toList());
     }
 
     @Override
@@ -109,6 +114,6 @@ public class DeveloperCourseServiceImpl implements DeveloperCourseService {
             throw new IllegalArgumentException
                 ("Courses are not present for teacher with the following id = " + teacherId + ".");
         }
-        return developerCourseMapper.transformToListOfDTO(developerCourses.get());
+        return developerCourses.get().stream().map(dc -> developerCourseMapper.transformToDTO(dc)).collect(Collectors.toList());
     }
 }

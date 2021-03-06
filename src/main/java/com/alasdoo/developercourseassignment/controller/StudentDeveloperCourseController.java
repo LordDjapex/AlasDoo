@@ -1,9 +1,12 @@
 package com.alasdoo.developercourseassignment.controller;
 
 import com.alasdoo.developercourseassignment.dto.StudentDeveloperCourseDTO;
+import com.alasdoo.developercourseassignment.service.StudentDeveloperCourseService;
 import com.alasdoo.developercourseassignment.service.impl.StudentDeveloperCourseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,44 +21,46 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/studentdevelopercourse")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class StudentDeveloperCourseController {
 
     @Autowired
-    private StudentDeveloperCourseServiceImpl studentDeveloperCourseServiceImpl;
+    private StudentDeveloperCourseService studentDeveloperCourseService;
 
     @GetMapping(value = "/getStudentCourse/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDeveloperCourseDTO selectStudentDeveloperCourse(@PathVariable("id") Integer id) {
-        return studentDeveloperCourseServiceImpl.findOne(id);
+    public ResponseEntity<StudentDeveloperCourseDTO> selectStudentDeveloperCourse(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(studentDeveloperCourseService.findOne(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StudentDeveloperCourseDTO> getAllStudentDeveloperCourses() {
-        return studentDeveloperCourseServiceImpl.findAll();
+    public ResponseEntity<List<StudentDeveloperCourseDTO>> getAllStudentDeveloperCourses() {
+        return new ResponseEntity<>(studentDeveloperCourseService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/addStudentDeveloperCourse", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDeveloperCourseDTO saveStudentDeveloperCourse(@RequestBody StudentDeveloperCourseDTO studentDeveloperCourseDTO) {
-        return studentDeveloperCourseServiceImpl.save(studentDeveloperCourseDTO);
+    public ResponseEntity<StudentDeveloperCourseDTO> saveStudentDeveloperCourse(@RequestBody StudentDeveloperCourseDTO studentDeveloperCourseDTO) {
+        return new ResponseEntity<>(studentDeveloperCourseService.save(studentDeveloperCourseDTO), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDeveloperCourseDTO updateStudentDeveloperCourse(@PathVariable("id") Integer id, @RequestBody StudentDeveloperCourseDTO studentDeveloperCourseDTO) {
-        return studentDeveloperCourseServiceImpl.update(id, studentDeveloperCourseDTO);
+    public ResponseEntity<StudentDeveloperCourseDTO>updateStudentDeveloperCourse(@PathVariable("id") Integer id,
+                                                                                 @RequestBody StudentDeveloperCourseDTO studentDeveloperCourseDTO) {
+        return new ResponseEntity<>(studentDeveloperCourseService.update(id, studentDeveloperCourseDTO), HttpStatus.OK) ;
     }
 
     @DeleteMapping(value = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteStudentDeveloperCourse(@PathVariable("id") Integer id) {
-        studentDeveloperCourseServiceImpl.remove(id);
+    public ResponseEntity<Void> deleteStudentDeveloperCourse(@PathVariable("id") Integer id) {
+        studentDeveloperCourseService.remove(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/get/student/{studentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDeveloperCourseDTO findByStudentId(@PathVariable("studentId") Integer studentId) {
-        return studentDeveloperCourseServiceImpl.findByStudentId(studentId);
+    public ResponseEntity<StudentDeveloperCourseDTO> findByStudentId(@PathVariable("studentId") Integer studentId) {
+        return new ResponseEntity<>(studentDeveloperCourseService.findByStudentId(studentId), HttpStatus.OK);
     }
 
     @GetMapping(value = "/get/course/{courseId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StudentDeveloperCourseDTO> findByCourseId(@PathVariable("courseId") Integer courseId) {
-        return studentDeveloperCourseServiceImpl.findByDeveloperCourseId(courseId);
+    public ResponseEntity<List<StudentDeveloperCourseDTO>> findByCourseId(@PathVariable("courseId") Integer courseId) {
+        return new ResponseEntity<>(studentDeveloperCourseService.findByDeveloperCourseId(courseId), HttpStatus.OK);
     }
 }

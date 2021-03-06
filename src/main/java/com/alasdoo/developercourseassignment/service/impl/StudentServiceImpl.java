@@ -8,6 +8,7 @@ import com.alasdoo.developercourseassignment.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,12 +38,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public StudentDTO save(StudentDTO studentDTO) {
         Student student = studentMapper.transformToEntity(studentDTO);
         return studentMapper.transformToDTO(studentRepository.save(student));
     }
 
     @Override
+    @Transactional
     public void remove(Integer id) throws IllegalArgumentException {
         Optional<Student> student = studentRepository.findById(id);
         if (!student.isPresent()) {
@@ -53,18 +56,32 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public StudentDTO update(Integer id, StudentDTO studentDTO) {
         Optional<Student> oldStudent = studentRepository.findById(id);
         if (!oldStudent.isPresent()) {
             throw new IllegalArgumentException
                 ("Student with the following id = " + id + " is not found.");
         }
+
+        /*i don't use mapper transform to entity here because it would take the id from teacherDTO which, depending on request, might me different from
+        one that we've sent
+
+        It is be a good practice to put mapping of properties from dto to entity in seperate method, but since we're mapping only 3 properties, i didn't
+        feel as if it were necessary.
+
+        private setStudentProperties(Teacher student, studentDTO studentDTO) {
+            student.setStudentEmail(studentDTO.getSetEmail())
+            ...etc
+        }
+         */
         oldStudent.get().setName(studentDTO.getName());
         oldStudent.get().setSurname(studentDTO.getSurname());
         oldStudent.get().setAccountName(studentDTO.getAccountName());
         oldStudent.get().setPassword(studentDTO.getPassword());
         oldStudent.get().setEmail(studentDTO.getEmail());
         oldStudent.get().setBankCardNumber(studentDTO.getBankCardNumber());
+
         studentRepository.save(oldStudent.get());
         return studentMapper.transformToDTO(oldStudent.get());
     }

@@ -1,61 +1,56 @@
 package com.alasdoo.developercourseassignment.controller;
 
 import com.alasdoo.developercourseassignment.dto.StudentDTO;
-import com.alasdoo.developercourseassignment.service.impl.StudentServiceImpl;
+import com.alasdoo.developercourseassignment.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/student")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
 
     @Autowired
-    private StudentServiceImpl studentServiceImpl;
+    private StudentService studentService;
 
     @GetMapping(value = "/getStudent/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDTO selectStudent(@PathVariable("id") Integer id) {
-        return studentServiceImpl.findOne(id);
+    public ResponseEntity<StudentDTO> selectStudent(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(studentService.findOne(id), HttpStatus.OK);
     }
 
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StudentDTO> getAllStudents() {
-        return studentServiceImpl.findAll();
+    public ResponseEntity<List<StudentDTO>> getAllStudents() {
+        return new ResponseEntity<>(studentService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/addStudent", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDTO saveStudent(@RequestBody StudentDTO studentDTO) {
-        return studentServiceImpl.save(studentDTO);
+    public ResponseEntity<StudentDTO> saveStudent(@RequestBody StudentDTO studentDTO) {
+            return new ResponseEntity<>(studentService.save(studentDTO), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDTO updateStudent(@PathVariable("id") Integer id, @RequestBody StudentDTO studentDTO) {
-        return studentServiceImpl.update(id, studentDTO);
+    public ResponseEntity<StudentDTO> updateStudent(@PathVariable("id") Integer id, @RequestBody StudentDTO studentDTO) {
+        return new ResponseEntity<>(studentService.update(id, studentDTO), HttpStatus.OK) ;
     }
 
     @DeleteMapping(value = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteStudent(@PathVariable("id") Integer id) {
-        studentServiceImpl.remove(id);
+    public ResponseEntity<Void> deleteStudent(@PathVariable("id") Integer id) {
+        studentService.remove(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/get/{accountName}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDTO findByAccountName(@PathVariable("accountName") String accountName) {
-        return studentServiceImpl.findByAccountName(accountName);
+    public ResponseEntity<StudentDTO> findByAccountName(@PathVariable("accountName") String accountName) {
+        return new ResponseEntity<>(studentService.findByAccountName(accountName), HttpStatus.OK) ;
     }
 
     @GetMapping(value = "/get/{accountName}/{password}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDTO findByAccountName(@PathVariable("accountName") String accountName, @PathVariable("password") String password) {
-        return studentServiceImpl.findByAccountNameAndPassword(accountName, password);
+    public ResponseEntity<StudentDTO> findByAccountName(@PathVariable("accountName") String accountName, @PathVariable("password") String password) {
+        return new ResponseEntity<>(studentService.findByAccountNameAndPassword(accountName, password), HttpStatus.OK);
     }
 }

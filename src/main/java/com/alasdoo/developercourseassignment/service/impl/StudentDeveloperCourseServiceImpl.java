@@ -12,6 +12,7 @@ import com.alasdoo.developercourseassignment.service.StudentDeveloperCourseServi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +48,7 @@ public class StudentDeveloperCourseServiceImpl implements StudentDeveloperCourse
     }
 
     @Override
+    @Transactional
     public StudentDeveloperCourseDTO save(StudentDeveloperCourseDTO studentDeveloperCourseDTO) {
         StudentDeveloperCourse studentDeveloperCourse = studentDeveloperCourseMapper.transformToEntity(studentDeveloperCourseDTO);
         Integer studentId = studentDeveloperCourseDTO.getStudentId();
@@ -69,6 +71,7 @@ public class StudentDeveloperCourseServiceImpl implements StudentDeveloperCourse
     }
 
     @Override
+    @Transactional
     public void remove(Integer id) {
         Optional<StudentDeveloperCourse> studentDeveloperCourse = studentDeveloperCourseRepository.findById(id);
         if (!studentDeveloperCourse.isPresent()) {
@@ -79,15 +82,18 @@ public class StudentDeveloperCourseServiceImpl implements StudentDeveloperCourse
     }
 
     @Override
+    @Transactional
     public StudentDeveloperCourseDTO update(Integer id, StudentDeveloperCourseDTO studentDeveloperCourseDTO) {
         Optional<StudentDeveloperCourse> oldStudentDeveloperCourse = studentDeveloperCourseRepository.findById(id);
         if (!oldStudentDeveloperCourse.isPresent()) {
             throw new IllegalArgumentException
                 ("Student course with the following id = " + id + " is not found.");
         }
+
         oldStudentDeveloperCourse.get().setDeveloperCourseId(studentDeveloperCourseDTO.getDeveloperCourseId());
         oldStudentDeveloperCourse.get().setStudentId(studentDeveloperCourseDTO.getStudentId());
         oldStudentDeveloperCourse.get().setClassesBought(studentDeveloperCourseDTO.getClassesBought());
+
         studentDeveloperCourseRepository.save(oldStudentDeveloperCourse.get());
         return studentDeveloperCourseMapper.transformToDTO(oldStudentDeveloperCourse.get());
     }
@@ -109,6 +115,8 @@ public class StudentDeveloperCourseServiceImpl implements StudentDeveloperCourse
             throw new IllegalArgumentException
                 ("Course with the following id = " + developerCourseId + " is not found.");
         }
-        return studentDeveloperCourseMapper.transformToListOfDTO(studentDeveloperCourse.get());
+        return studentDeveloperCourse.get().stream()
+                .map(sdc -> studentDeveloperCourseMapper.transformToDTO(sdc))
+                .collect(Collectors.toList());
     }
 }
